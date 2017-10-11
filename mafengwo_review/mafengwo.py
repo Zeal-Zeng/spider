@@ -88,3 +88,18 @@ def getData(url = 'http://www.mafengwo.cn/i/7618004.html'):
     return  data
 # 'http://www.mafengwo.cn/note/detail.php?iId=7542569&iPage=2'
 # 'http://pagelet.mafengwo.cn/note/pagelet/recommendNoteApi?params={"type":0,"objid":0,"page":250,"ajax":1,"retina":0}'
+
+def getReviewUrls():
+    all_reviews_urls = []
+    for i in range(1,251):
+        reviews_urls=[]
+        b = BeautifulSoup(json.loads(s.get('http://pagelet.mafengwo.cn/note/pagelet/recommendNoteApi?params={"type":0,"objid":0,"page":%d,"ajax":1,"retina":0}'%i).text)['data']['html'])
+        print(i)
+        for j in b.findAll('div',class_='tn-item clearfix'):
+            reviews_urls.append(j.a.get("href")+'\n')
+        all_reviews_urls+=reviews_urls
+        with open('review_urls.txt','a') as f:
+            f.writelines(reviews_urls)
+    return  all_reviews_urls
+
+# getReviewUrls()
