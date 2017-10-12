@@ -16,7 +16,7 @@ import json
 from bs4 import BeautifulSoup
 s = requests.session()
 s.headers = header
-def getData(url = 'http://www.mafengwo.cn/i/7618004.html'):
+def getiData(url = 'http://www.mafengwo.cn/i/7618004.html'):
     data = {}
     r = s.get(url)
     r.encoding='utf-8'
@@ -86,41 +86,20 @@ def getData(url = 'http://www.mafengwo.cn/i/7618004.html'):
     except:
         print("EEE! reply_info")
     return  data
+
+
+
 # 'http://www.mafengwo.cn/note/detail.php?iId=7542569&iPage=2'
 # 'http://pagelet.mafengwo.cn/note/pagelet/recommendNoteApi?params={"type":0,"objid":0,"page":250,"ajax":1,"retina":0}'
 
-def getReviewUrls():
-    all_reviews_urls = []
-    for i in range(1,251):
-        reviews_urls=[]
-        b = BeautifulSoup(json.loads(s.get('http://pagelet.mafengwo.cn/note/pagelet/recommendNoteApi?params={"type":0,"objid":0,"page":%d,"ajax":1,"retina":0}'%i).text)['data']['html'])
-        print(i)
-        for j in b.findAll('div',class_='tn-item clearfix'):
-            reviews_urls.append(j.a.get("href")+'\n')
-        all_reviews_urls+=reviews_urls
-        with open('review_urls.txt','a') as f:
-            f.writelines(reviews_urls)
-    return  all_reviews_urls
-def getReviewUrls2():
-    all_reviews_urls = set()
-    i=6000
-    l=len(all_reviews_urls)
-    while(True):
-        print(i)
-        b = BeautifulSoup(json.loads(s.get('http://www.mafengwo.cn/ajax/ajax_article.php?start=%d'%i).text)['html'])
-        reviews_urls = set(i.get("href")+'\n' for i in b.findAll('a'))
-        all_reviews_urls|=reviews_urls
-        with open('review_urls_2.txt','a') as f:
-            f.writelines(reviews_urls)
-        i+=1
-        ll=len(all_reviews_urls)
-        if(ll>l):
-            pass
-        else:
-            break
+# https://m.mafengwo.cn/note/index/more?mddid=0&iPage=2
 
-    return all_reviews_urls
-    with open('review_urls_2_all.txt','w') as f:
-            f.writelines(all_reviews_urls)
 
-getReviewUrls2()
+
+# https://m.mafengwo.cn/poi/17506.html
+# https://m.mafengwo.cn/jd/12703/gonglve.html?page=2&is_ajax=1
+# https://m.mafengwo.cn/mdd/12703
+# http://www.mafengwo.cn/mdd/
+
+
+
