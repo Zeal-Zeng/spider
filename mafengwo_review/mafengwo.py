@@ -101,5 +101,26 @@ def getReviewUrls():
         with open('review_urls.txt','a') as f:
             f.writelines(reviews_urls)
     return  all_reviews_urls
+def getReviewUrls2():
+    all_reviews_urls = set()
+    i=6000
+    l=len(all_reviews_urls)
+    while(True):
+        print(i)
+        b = BeautifulSoup(json.loads(s.get('http://www.mafengwo.cn/ajax/ajax_article.php?start=%d'%i).text)['html'])
+        reviews_urls = set(i.get("href")+'\n' for i in b.findAll('a'))
+        all_reviews_urls|=reviews_urls
+        with open('review_urls_2.txt','a') as f:
+            f.writelines(reviews_urls)
+        i+=1
+        ll=len(all_reviews_urls)
+        if(ll>l):
+            pass
+        else:
+            break
 
-# getReviewUrls()
+    return all_reviews_urls
+    with open('review_urls_2_all.txt','w') as f:
+            f.writelines(all_reviews_urls)
+
+getReviewUrls2()
