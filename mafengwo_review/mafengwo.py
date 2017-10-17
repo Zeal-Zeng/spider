@@ -146,24 +146,38 @@ def getMddData(url='http://www.mafengwo.cn/poi/17506.html'):
             print("EE!!")
         page += 1
     return data
-def go_mddData(from_=0):
+def go_mddData(from_=153,inter =0):
     f=open("jd.txt")
-    ff = open('mdd_data.txt','a')
+    ff = open('mdd_data%d.txt'%inter,'a')
     i=0
     for j in range(from_):
         i+=1
         f.readline()
 
     for id in f:
-        d = getMddData('http://www.mafengwo.cn/poi/%s.html'%id.strip())
-        ff.write(json.dumps(d)+'\n')
-        i+=1
+        i += 1
         if i%100==0:
             ff.flush()
-        print(id)
-        print(i)
+        if i%4 == inter:
+            d = getMddData('http://www.mafengwo.cn/poi/%s.html'%id.strip())
+            ff.write(json.dumps(d)+'\n')
+            print(id)
+            print(i)
     f.close()
     ff.close()
+# go_mddData(from_=36864,inter =0)
+# go_mddData(from_=38441,inter =1)
+# go_mddData(from_=36978,inter =2)
+go_mddData(from_=36663,inter =3)
+
+
+# 12132 2947 21098 628
+# 36688 37897 36802 36527
+
+# 36864 38441 36978 36663
+
+
+
 
 
 
