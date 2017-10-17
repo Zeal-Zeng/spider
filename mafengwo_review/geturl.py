@@ -88,4 +88,22 @@ def getJDUrl():
             with open('jd.txt','a') as f:
                 f.writelines([i.get('href').rstrip('.html').lstrip('/poi/')+'\n' for i in BeautifulSoup(l).findAll('a')])
 
-getJDUrl()
+# getJDUrl()
+def getYoujiList(mddid):
+    url = 'http://www.mafengwo.cn/gonglve/ajax.php?act=get_travellist'
+    data = {
+        'mddid':mddid ,
+        'pageid':'poi_yj' ,
+        'sort':'',
+        'cost':'0',
+        'days':'0',
+        'month':'0',
+        'tagid':'0',
+        'page':'3',
+    }
+
+f = open("mdds.txt")
+print(f.readlines(31))
+print('------------')
+print(f.readlines(10))
+f.close()

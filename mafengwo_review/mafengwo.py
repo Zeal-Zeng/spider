@@ -109,20 +109,61 @@ def getMddData(url='http://www.mafengwo.cn/poi/17506.html'):
     b = BeautifulSoup(s.get(url).text)
     h = json.loads(b.script.text.split('=', 1)[1].strip().rstrip(';'))
     data['title'] =  h['poiname']
-    d = b.find('div', class_='mod mod-detail')
-    dd = [i for i in d if not isinstance(i, str)]
-    data['summary'] = dd[0].text
-    o = [i for i in dd[1].contents if not isinstance(i, str)]
-    for i in o :
-        ii = [j.text for j in i if not isinstance(j, str)]
-        data['ii[0]'] = ii[1]
-    for x in d.findAll('dl'):
-        data[x.dt.text]=x.dd.text
-    comments_url = 'http://pagelet.mafengwo.cn/poi/pagelet/poiCommentListApi?params={"poi_id":"%d","page":1,"just_comment":1}'%h['poiid']
-    json.loads(s.get(comments_url))['data']['html']
-    cb = BeautifulSoup(json.loads(s.get(comments_url).text)['data']['html'])
-    cb.find('div', class_='rev-list')
 
+    try:
+        d = b.find('div', class_='mod mod-detail')
+        dd = [i for i in d if not isinstance(i, str)]
+        data['summary'] = dd[0].text
+        try:
+            o = [i for i in dd[1].contents if not isinstance(i, str)]
+            for i in o :
+                ii = [j.text for j in i if not isinstance(j, str)]
+                data[ii[0]] = ii[1]
+        except:
+            pass
+        for x in d.findAll('dl'):
+            data[x.dt.text]=x.dd.text
+    except:
+        pass
+    page = 1
+    while(True):
+        try:
+            comments_url = 'http://pagelet.mafengwo.cn/poi/pagelet/poiCommentListApi?params={"poi_id":"%d","page":%d,"just_comment":1}'%(h['poiid'],page)
+            cb = BeautifulSoup(json.loads(s.get(comments_url).text)['data']['html'])
+            if not cb.find('a'):
+                break
+            rev = [i for i in cb.find('div', class_='rev-list').ul.contents if not isinstance(i, str)]
+            data['reply'] = []
+            for reply in rev:
+                reply_dict = {}
+                reply_dict['content'] = reply.p.text
+                reply_dict['user_avatar'] = reply.div.img.get('src')
+                reply_dict['user_name'] = reply.find("a", class_='name').text
+                reply_dict['user_url'] = reply.find("a", class_='name').get("href")
+                reply_dict['time'] = reply.find("span", class_='time').text
+                data['reply'].append(reply_dict)
+        except:
+            print("EE!!")
+        page += 1
+    return data
+def go_mddData(from_=0):
+    f=open("jd.txt")
+    ff = open('mdd_data.txt','a')
+    i=0
+    for j in range(from_):
+        i+=1
+        f.readline()
+
+    for id in f:
+        d = getMddData('http://www.mafengwo.cn/poi/%s.html'%id.strip())
+        ff.write(json.dumps(d)+'\n')
+        i+=1
+        if i%100==0:
+            ff.flush()
+        print(id)
+        print(i)
+    f.close()
+    ff.close()
 
 
 
